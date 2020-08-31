@@ -2,15 +2,20 @@ from flask import jsonify
 from flask import request
 from flask import Blueprint
 from models import Todo, db
+import datetime
 import requests
-
 from . import api
+
+def send_slack(msg):
+	res = requests.post('https://hooks.slack.com/services/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',json={\
+		'text': msg}, headers={'Content-Type':'application/json'})
 
 @api.route('/todos',methods=['GET','POST'])
 def todos():
 	if request.method == 'POST':
-		res = requests.post('https://hooks.slack.com/services/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',json={
-			'text': 'Hello world'}, headers={'Content-Type':'application/json'})
+		# 생성하는 코드가 추가됨
+		send_slack('TODO가 생성되었습니다')		# 사용자 정보, 할일 제목, 기한
+
 
 	elif request.method == 'GET':
 		pass
@@ -33,9 +38,14 @@ def slack_todos():
 
 		db.session.add(todo)
 		db.session.commit()
-		ret_msg = 'Todo가 생성되었습니다.'
+		ret_msg = 'Todo가 생성되었습니다'
+
+
+		send_slack('[%s] "%s" 할일을 만들었습니다.' % (str(datetime.datetime.now()), todo_name))
 
 	if cmd == 'list':
-		pass
+		todos = Todo.query.all()
+		for idx, todo in enumerate(todos):
+			ret_msg += '%d, %s (~ %s)\n' % (idx+1, todo.title, str(todo.tstamp))
 		
 	return ret_msg

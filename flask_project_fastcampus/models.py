@@ -7,7 +7,7 @@ class Todo(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
 	title = db.Column(db.String(256))
-	tstamp = db.Column(db.DateTime, sever_default = db.func.now())
+	tstamp = db.Column(db.DateTime, server_default = db.func.now())
 
 	@property
 	def serialize(self):

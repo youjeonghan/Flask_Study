@@ -43,9 +43,9 @@ def slack_todos():
 
 		send_slack('[%s] "%s" 할일을 만들었습니다.' % (str(datetime.datetime.now()), todo_name))
 
-	if cmd == 'list':
+	elif cmd == 'list':
 		todos = Todo.query.all()
 		for idx, todo in enumerate(todos):
-			ret_msg += '%d, %s (~ %s)\n' % (idx+1, todo.title, str(todo.tstamp))
+			ret_msg += '%d. %s (~ %s)\n' % (idx+1, todo.title, str(todo.tstamp))
 		
 	return ret_msg
